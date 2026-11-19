@@ -1,30 +1,29 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:pekris_day3/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
+  testWidgets('UI tanpa slicing smoke test: add and delete notes', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(const MyApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Kondisi awal: 2 catatan contoh tampil dan status penyimpanan Memori.
+    expect(find.text('2'), findsOneWidget);
+    expect(find.text('Memori'), findsOneWidget);
+    expect(find.text('Pecah UI jadi komponen kecil (Slicing)'), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+    // Uji tambah catatan baru.
+    await tester.enterText(find.byType(TextField), 'Catatan baru dari test');
+    await tester.tap(find.text('Simpan'));
     await tester.pump();
+    expect(find.text('Catatan baru dari test'), findsOneWidget);
+    expect(find.text('3'), findsOneWidget);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Uji hapus catatan pertama.
+    await tester.tap(find.byTooltip('Hapus Catatan').first);
+    await tester.pump();
+    expect(find.text('2'), findsOneWidget);
   });
 }
