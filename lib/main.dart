@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 import 'pages/home_page.dart';
 
-void main() {
-  // Tahap 2 (Hive): Nantinya main() menginisialisasi Hive Box sebelum memanggil MyApp.
+Future<void> main() async {
+  // Wajib dipanggil sebelum menjalankan plugin/async sebelum runApp().
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Inisialisasi Hive dan buka Box untuk menyimpan daftar catatan secara lokal.
+  await Hive.initFlutter();
+  await Hive.openBox<String>('notesBox');
+
   runApp(const MyApp());
 }
 
 /// MyApp memegang konfigurasi global aplikasi.
-/// Tampilan halaman sudah dipisah ke `lib/pages/home_page.dart` (Slicing UI).
+/// Daftar catatan pada HomePage sekarang tersimpan secara persisten di Hive.
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -21,7 +28,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
       ),
-      home: const HomePage(title: 'Workshop Flutter: Slicing UI'),
+      home: const HomePage(title: 'Workshop Flutter: Slicing + Hive'),
     );
   }
 }
